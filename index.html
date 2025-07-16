@@ -446,7 +446,7 @@
 
   <!-- Audio Elements -->
   <audio id="bgm" loop>
-    <source src="https://files.catbox.moe/368qbm.mp3" type="audio/mpeg">
+    <source src="https://www.soundjay.com/misc/sounds/bubble-pop-1.mp3" type="audio/mpeg">
   </audio>
   <audio id="hitSound">
     <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
@@ -455,7 +455,7 @@
     <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mpeg">
   </audio>
   <audio id="gameOverBgm">
-    <source src="https://files.catbox.moe/kqd5qq.mp3" type="audio/mpeg">
+    <source src="https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3" type="audio/mpeg">
   </audio>
 
   <footer>
@@ -468,215 +468,226 @@
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
     // Initialize particles background
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 80, density: { enable: true, value_area: 800 } },
-        color: { value: "#ffcc00" },
-        shape: { type: "circle" },
-        opacity: { value: 0.3, random: true },
-        size: { value: 3, random: true },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: "#ffcc00",
-          opacity: 0.1,
-          width: 1
+    document.addEventListener('DOMContentLoaded', function() {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#ffcc00" },
+          shape: { type: "circle" },
+          opacity: { value: 0.3, random: true },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#ffcc00",
+            opacity: 0.1,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            random: true,
+            straight: false,
+            out_mode: "out",
+            bounce: false
+          }
         },
-        move: {
-          enable: true,
-          speed: 2,
-          direction: "none",
-          random: true,
-          straight: false,
-          out_mode: "out",
-          bounce: false
-        }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: { enable: true, mode: "repulse" },
-          onclick: { enable: true, mode: "push" },
-          resize: true
-        }
-      },
-      retina_detect: true
-    });
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" },
+            resize: true
+          }
+        },
+        retina_detect: true
+      });
 
-    const target = document.getElementById('target');
-    const area = document.getElementById('gameArea');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const timeEl = document.getElementById('timeLeft');
-    const shootBtn = document.getElementById('shootBtn');
-    const messageBox = document.getElementById('messageBox');
-    const finalScore = document.getElementById('finalScore');
-    const retryBtn = document.getElementById('retryBtn');
-    const startBtn = document.getElementById('startBtn');
-    const infoBox = document.getElementById('infoBox');
-    const countdown = document.getElementById('countdown');
-    const bgm = document.getElementById('bgm');
-    const hitSound = document.getElementById('hitSound');
-    const missSound = document.getElementById('missSound');
-    const gameOverBgm = document.getElementById('gameOverBgm');
+      const target = document.getElementById('target');
+      const area = document.getElementById('gameArea');
+      const scoreEl = document.getElementById('score');
+      const livesEl = document.getElementById('lives');
+      const timeEl = document.getElementById('timeLeft');
+      const shootBtn = document.getElementById('shootBtn');
+      const messageBox = document.getElementById('messageBox');
+      const finalScore = document.getElementById('finalScore');
+      const retryBtn = document.getElementById('retryBtn');
+      const startBtn = document.getElementById('startBtn');
+      const infoBox = document.getElementById('infoBox');
+      const countdown = document.getElementById('countdown');
+      const bgm = document.getElementById('bgm');
+      const hitSound = document.getElementById('hitSound');
+      const missSound = document.getElementById('missSound');
+      const gameOverBgm = document.getElementById('gameOverBgm');
 
-    let score = 0, lives = 3, time = 30, playing = false;
-    let moveInterval, timer;
-    let difficulty = 1300; // Initial movement interval
+      let score = 0, lives = 3, time = 30, playing = false;
+      let moveInterval, timer;
+      let difficulty = 1300; // Initial movement interval
 
-    function moveTarget() {
-      if (!playing) return;
-      const maxX = area.clientWidth - target.clientWidth;
-      const maxY = area.clientHeight - target.clientHeight;
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-      target.style.left = `${x}px`;
-      target.style.top = `${y}px`;
-      
-      // Increase difficulty as score increases
-      if (score > 0 && score % 5 === 0 && difficulty > 500) {
-        difficulty -= 100;
-        clearInterval(moveInterval);
-        moveInterval = setInterval(moveTarget, difficulty);
-      }
-    }
-
-    function createHitEffect() {
-      const shoe = document.createElement('div');
-      shoe.textContent = '👞';
-      shoe.className = 'shoe-effect';
-      const targetRect = target.getBoundingClientRect();
-      const areaRect = area.getBoundingClientRect();
-      const leftPos = targetRect.left - areaRect.left + targetRect.width / 2;
-      const topPos = targetRect.top - areaRect.top + targetRect.height / 2;
-      shoe.style.left = `${leftPos}px`;
-      shoe.style.top = `${topPos}px`;
-      area.appendChild(shoe);
-      setTimeout(() => shoe.remove(), 600);
-    }
-
-    function isCentered() {
-      const t = target.getBoundingClientRect();
-      const a = area.getBoundingClientRect();
-      const tx = t.left + t.width / 2;
-      const ty = t.top + t.height / 2;
-      const cx = a.left + a.width / 2;
-      const cy = a.top + a.height / 2;
-      const dist = Math.hypot(tx - cx, ty - cy);
-      return dist < 60;
-    }
-
-    function shoot() {
-      if (!playing) return;
-      createHitEffect();
-      if (isCentered()) {
-        score++;
-        scoreEl.textContent = score;
-        hitSound.currentTime = 0;
-        hitSound.play().catch(e => console.log("Sound error:", e));
-        
-        // Visual feedback for hit
-        target.style.boxShadow = "0 0 30px rgba(0, 255, 0, 0.8)";
-        setTimeout(() => {
-          target.style.boxShadow = "0 0 25px rgba(255, 50, 50, 0.7)";
-        }, 300);
-      } else {
-        lives--;
-        livesEl.textContent = lives;
-        missSound.currentTime = 0;
-        missSound.play().catch(e => console.log("Sound error:", e));
-        
-        // Visual feedback for miss
-        area.style.boxShadow = "inset 0 0 30px rgba(255, 0, 0, 0.5)";
-        setTimeout(() => {
-          area.style.boxShadow = "inset 0 0 20px rgba(0,0,0,0.5)";
-        }, 300);
-        
-        if (lives <= 0) endGame();
-      }
-    }
-
-    function startGame() {
-      startBtn.style.display = 'none';
-      shootBtn.style.display = 'flex';
-      
-      // Show countdown
-      countdown.style.display = 'block';
-      let count = 3;
-      countdown.textContent = count;
-      
-      const countdownInterval = setInterval(() => {
-        count--;
-        if (count > 0) {
-          countdown.textContent = count;
-        } else {
-          clearInterval(countdownInterval);
-          countdown.style.display = 'none';
-          startGamePlay();
-        }
-      }, 1000);
-    }
-    
-    function startGamePlay() {
-      score = 0;
-      lives = 3;
-      time = 30;
-      difficulty = 1300;
-      playing = true;
-      scoreEl.textContent = score;
-      livesEl.textContent = lives;
-      timeEl.textContent = time;
-      messageBox.style.display = 'none';
-      infoBox.style.display = 'flex';
-
-      moveTarget();
-
-      // Start background music
-      bgm.volume = 0.3;
-      bgm.currentTime = 0;
-      bgm.play().catch(e => console.log("Autoplay block:", e));
-      gameOverBgm.pause();
-      gameOverBgm.currentTime = 0;
-
-      // Set up target movement
-      moveInterval = setInterval(moveTarget, difficulty);
-
-      // Set up timer
-      timer = setInterval(() => {
+      function moveTarget() {
         if (!playing) return;
-        time--;
-        timeEl.textContent = time;
-        if (time <= 0) endGame();
-      }, 1000);
-    }
+        const maxX = area.clientWidth - target.clientWidth;
+        const maxY = area.clientHeight - target.clientHeight;
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        target.style.left = `${x}px`;
+        target.style.top = `${y}px`;
+        
+        // Increase difficulty as score increases
+        if (score > 0 && score % 5 === 0 && difficulty > 500) {
+          difficulty -= 100;
+          clearInterval(moveInterval);
+          moveInterval = setInterval(moveTarget, difficulty);
+        }
+      }
 
-    function endGame() {
-      playing = false;
-      finalScore.textContent = score;
-      messageBox.style.display = 'block';
-      clearInterval(moveInterval);
-      clearInterval(timer);
+      function createHitEffect() {
+        const shoe = document.createElement('div');
+        shoe.textContent = '👞';
+        shoe.className = 'shoe-effect';
+        const targetRect = target.getBoundingClientRect();
+        const areaRect = area.getBoundingClientRect();
+        const leftPos = targetRect.left - areaRect.left + targetRect.width / 2;
+        const topPos = targetRect.top - areaRect.top + targetRect.height / 2;
+        shoe.style.left = `${leftPos}px`;
+        shoe.style.top = `${topPos}px`;
+        area.appendChild(shoe);
+        setTimeout(() => shoe.remove(), 600);
+      }
+
+      function isCentered() {
+        const t = target.getBoundingClientRect();
+        const a = area.getBoundingClientRect();
+        const tx = t.left + t.width / 2;
+        const ty = t.top + t.height / 2;
+        const cx = a.left + a.width / 2;
+        const cy = a.top + a.height / 2;
+        const dist = Math.hypot(tx - cx, ty - cy);
+        return dist < 60;
+      }
+
+      function shoot() {
+        if (!playing) return;
+        createHitEffect();
+        if (isCentered()) {
+          score++;
+          scoreEl.textContent = score;
+          hitSound.currentTime = 0;
+          hitSound.play().catch(e => console.log("Sound error:", e));
+          
+          // Visual feedback for hit
+          target.style.boxShadow = "0 0 30px rgba(0, 255, 0, 0.8)";
+          setTimeout(() => {
+            target.style.boxShadow = "0 0 25px rgba(255, 50, 50, 0.7)";
+          }, 300);
+        } else {
+          lives--;
+          livesEl.textContent = lives;
+          missSound.currentTime = 0;
+          missSound.play().catch(e => console.log("Sound error:", e));
+          
+          // Visual feedback for miss
+          area.style.boxShadow = "inset 0 0 30px rgba(255, 0, 0, 0.5)";
+          setTimeout(() => {
+            area.style.boxShadow = "inset 0 0 20px rgba(0,0,0,0.5)";
+          }, 300);
+          
+          if (lives <= 0) endGame();
+        }
+      }
+
+      function startGame() {
+        startBtn.style.display = 'none';
+        shootBtn.style.display = 'flex';
+        
+        // Show countdown
+        countdown.style.display = 'block';
+        let count = 3;
+        countdown.textContent = count;
+        
+        const countdownInterval = setInterval(() => {
+          count--;
+          if (count > 0) {
+            countdown.textContent = count;
+          } else {
+            clearInterval(countdownInterval);
+            countdown.style.display = 'none';
+            startGamePlay();
+          }
+        }, 1000);
+      }
       
-      bgm.pause();
-      bgm.currentTime = 0;
-      gameOverBgm.volume = 0.4;
-      gameOverBgm.currentTime = 0;
-      gameOverBgm.play();
-    }
+      function startGamePlay() {
+        score = 0;
+        lives = 3;
+        time = 30;
+        difficulty = 1300;
+        playing = true;
+        scoreEl.textContent = score;
+        livesEl.textContent = lives;
+        timeEl.textContent = time;
+        messageBox.style.display = 'none';
+        infoBox.style.display = 'flex';
 
-    shootBtn.addEventListener('click', shoot);
-    retryBtn.addEventListener('click', () => {
-      messageBox.style.display = 'none';
-      startGame();
+        moveTarget();
+
+        // Start background music
+        bgm.volume = 0.3;
+        bgm.currentTime = 0;
+        bgm.play().catch(e => console.log("Autoplay block:", e));
+        gameOverBgm.pause();
+        gameOverBgm.currentTime = 0;
+
+        // Set up target movement
+        moveInterval = setInterval(moveTarget, difficulty);
+
+        // Set up timer
+        timer = setInterval(() => {
+          if (!playing) return;
+          time--;
+          timeEl.textContent = time;
+          if (time <= 0) endGame();
+        }, 1000);
+      }
+
+      function endGame() {
+        playing = false;
+        finalScore.textContent = score;
+        messageBox.style.display = 'block';
+        clearInterval(moveInterval);
+        clearInterval(timer);
+        
+        bgm.pause();
+        bgm.currentTime = 0;
+        gameOverBgm.volume = 0.4;
+        gameOverBgm.currentTime = 0;
+        gameOverBgm.play().catch(e => console.log("Game over sound error:", e));
+      }
+
+      // Event listeners
+      shootBtn.addEventListener('click', shoot);
+      retryBtn.addEventListener('click', () => {
+        messageBox.style.display = 'none';
+        startGame();
+      });
+      startBtn.addEventListener('click', startGame);
+      
+      // Initialize UI state
+      shootBtn.style.display = 'none';
+      infoBox.style.display = 'none';
+      
+      // Add click functionality to target
+      target.addEventListener('click', shoot);
+
+      // Keyboard controls
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && playing) {
+          e.preventDefault(); // Prevent spacebar from scrolling
+          shoot();
+        }
+      });
     });
-    startBtn.addEventListener('click', startGame);
-    
-    // Initialize UI state
-    shootBtn.style.display = 'none';
-    infoBox.style.display = 'none';
-    
-    // Add click functionality to target
-    target.addEventListener('click', shoot);
   </script>
 </body>
 </html>
