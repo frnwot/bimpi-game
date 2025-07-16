@@ -58,7 +58,7 @@ You can play the game live from GitHub Pages:
 https://frnwot.github.io/bimpi-game/
 ```
 
-Replace with your actual GitHub Pages URL.
+if you want to fork Replace with your actual GitHub Pages URL.
 
 ---
 
